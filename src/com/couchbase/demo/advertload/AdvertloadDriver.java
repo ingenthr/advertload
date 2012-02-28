@@ -27,12 +27,11 @@ version = "0.1",
 configPrecedence = true)
 @BenchmarkDriver(name = "AdvertloadDriver",
 threadPerScale = (float) 1)
-@MatrixMix(operations = {"Login", "Logout", "Eat", "AttackRandom"},
+@MatrixMix(operations = {"Login", "Logout", "Event"},
 mix = {
     @Row({0, 0, 66, 34}),
     @Row({30, 70, 0, 0}),
-    @Row({0, 20, 34, 56}),
-    @Row({0, 20, 56, 34})
+    @Row({0, 20, 34, 56})
 })
 @NegativeExponential(cycleType = CycleType.CYCLETIME,
 cycleMean = 200,
@@ -164,7 +163,7 @@ public class AdvertloadDriver {
 	    return;
 	}
 	ctx.recordTime();
-	playerName = getRandomPlayer();
+	playerName = getRandomViewer();
 	String playerJsonRepresentation = (String) advertloadStore.get(stripBlanks(playerName));
 	logger.log(Level.FINE, "Player JSON:\n {0}", playerJsonRepresentation);
 	if (playerJsonRepresentation == null) {
@@ -198,12 +197,6 @@ public class AdvertloadDriver {
             player.logOut();
             storePlayer();
         }
-
-        // Add some read work
-        for (int i=0; i<400; i++) {
-            playerName = getRandomPlayer();
-            advertloadStore.asyncGet(stripBlanks(playerName));
-        }
 	player = null;
 	ctx.recordTime();
     }
@@ -214,51 +207,7 @@ public class AdvertloadDriver {
     }
 
     /**
-     * Operation to simulate attacking another player.
-     * @throws IOException Error connecting to server
-     */
-    @BenchmarkOperation(name = "AttackRandom",
-    max90th = 2,
-    timing = Timing.MANUAL)
-    public void doAttackRandom() throws IOException, InterruptedException, ExecutionException {
-	doLogin();
-	String attackerName = getRandomMonster();
-	ctx.recordTime();
-	Monster attacker = gson.fromJson((String) advertloadStore.get(attackerName), Monster.class);
-	assert attacker != null : "There is no monster " + attackerName;
-
-
-	Double ahpd = null;
-	Double phpd = null;
-	try {
-	    phpd = new Double(player.getHitpoints())* new Double(2^player.getLevel());
-	    ahpd = new Double(attacker.getHitpoints());
-	} catch (NullPointerException e) {
-	}
-
-	assert (ahpd != null);
-	assert (phpd != null);
-
-	Double playerWinProbable = phpd / (phpd + ahpd);
-	if (playerWinProbable > 0.5d) {
-	    Double itemProb = random.drandom(0.0d, 1.0d);
-	    if (itemProb <= attacker.getItemProbability()) {
-		Item bounty = new Item(player.getName());
-		advertloadStore.set(bounty.getItemName(), 0, gson.toJson(bounty)).get();
-		logger.log(Level.FINER, "Player {0} won a {1}", new Object[]{player.getName(), bounty.getItemName()});
-	    }
-	    // 100*2^level
-	    player.gainExperience(attacker.getExperienceWhenKilled());
-	} else {
-	    player.wound();
-	}
-
-	storePlayer();
-	ctx.recordTime();
-    }
-
-    /**
-     * Operation to simulate eating.
+     * Operation to simulate an advertising event.
      * @throws IOException Error connecting to server
      */
     @BenchmarkOperation(name = "Eat",
@@ -272,6 +221,21 @@ public class AdvertloadDriver {
 	ctx.recordTime();
     }
 
+
+    /**
+     * Operation to simulate eating.
+     * @throws IOException Error connecting to server
+     */
+    @BenchmarkOperation(name = "Event",
+    max90th = 2,
+    timing = Timing.MANUAL)
+    public void doEvent() throws IOException, InterruptedException, ExecutionException {
+	doLogin();
+        Event aView = new Event(getRandomViewer());
+	ctx.recordTime();
+	ctx.recordTime();
+    }
+
     @EndRun
     public void cleanup() {
 	//gamesimStore.flush();
@@ -282,7 +246,7 @@ public class AdvertloadDriver {
 	return s.replaceAll("\\s", "");
     }
 
-    private String getRandomPlayerName() {
+    private String getRandomViewerName() {
 	int i = random.random(0, players.length - 1);
 	return players[i];
     }
@@ -296,8 +260,8 @@ public class AdvertloadDriver {
 	return getRandomMonsterName() + random.random(0, ACTORMULT - 1);
     }
 
-    private String getRandomPlayer() {
-	return getRandomPlayerName() + random.random(0, ACTORMULT - 1);
+    private String getRandomViewer() {
+	return getRandomViewerName() + random.random(0, ACTORMULT - 1);
     }
 
     /**
