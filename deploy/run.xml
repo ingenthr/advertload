@@ -89,19 +89,15 @@
             </properties>
             <operationMix>
                 <name>Login</name>
-                <r>0</r><r>0</r><r>66</r><r>34</r>
+                <r>0</r><r>20</r><r>80</r>
             </operationMix>
             <operationMix>
                 <name>Logout</name>
-                <r>100</r><r>0</r><r>0</r><r>0</r>
+                <r>100</r><r>0</r><r>0</r>
             </operationMix>
             <operationMix>
-                <name>Eat</name>
-                <r>0</r><r>10</r><r>56</r><r>34</r>
-            </operationMix>
-            <operationMix>
-                <name>AttackRandom</name>
-                <r>0</r><r>10</r><r>56</r><r>34</r>
+                <name>Event</name>
+                <r>0</r><r>50</r><r>50</r>
             </operationMix>
         </driverConfig>
     </fa:runConfig>

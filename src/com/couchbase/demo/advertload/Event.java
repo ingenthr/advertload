@@ -47,4 +47,9 @@ public class Event {
     public String getItemViewed() {
 	return viewed;
     }
+
+    public String getEventName() {
+        return triggeredBy + getUuid();
+
+    }
 }

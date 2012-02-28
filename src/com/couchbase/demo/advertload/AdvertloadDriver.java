@@ -29,9 +29,9 @@ configPrecedence = true)
 threadPerScale = (float) 1)
 @MatrixMix(operations = {"Login", "Logout", "Event"},
 mix = {
-    @Row({0, 0, 66, 34}),
-    @Row({30, 70, 0, 0}),
-    @Row({0, 20, 34, 56})
+    @Row({0, 20, 80}),
+    @Row({100, 0, 0}),
+    @Row({0, 50, 50})
 })
 @NegativeExponential(cycleType = CycleType.CYCLETIME,
 cycleMean = 200,
@@ -59,7 +59,7 @@ public class AdvertloadDriver {
     private final String bucketname;
     private String bucketpass;
     private static CouchbaseClient advertloadStore;
-    private final int ACTORMULT = 300000 / players.length;
+    private final int ACTORMULT = 1000 / players.length;
     private static final String[] players = {"Matt", "Steve", "Dustin",
 	"James", "Trond", "Melinda",
 	"Bob", "Perry", "Sharon",
@@ -233,6 +233,7 @@ public class AdvertloadDriver {
 	doLogin();
         Event aView = new Event(getRandomViewer());
 	ctx.recordTime();
+        advertloadStore.set(aView.getEventName(), 0, gson.toJson(aView));
 	ctx.recordTime();
     }
 
