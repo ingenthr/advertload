@@ -84,6 +84,10 @@
                     <name>password</name>
                     <value/>
                 </property>
+                <property>
+                    <name>numactors</name>
+                    <value>1000</value>
+                </property>
                 <!-- The second way is a little more compact while preserving
                 the ability to set multiple values for a name -->
             </properties>
@@ -108,5 +112,6 @@
         <host>http://ingenthr-mbp.local.:8091/pools</host>
         <bucket>default</bucket>
         <bucketpw></bucketpw>
+        <numactors>1000</numactors>
     </serverConfig>
 </advertloadBenchmark>

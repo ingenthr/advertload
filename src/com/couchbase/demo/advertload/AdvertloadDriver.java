@@ -59,8 +59,9 @@ public class AdvertloadDriver {
     private final String bucketname;
     private String bucketpass;
     private static CouchbaseClient advertloadStore;
-    private final int ACTORMULT = 1000 / players.length;
-    private static final String[] players = {"Matt", "Steve", "Dustin",
+    private int actorsSpecified;
+    private final int ACTORMULT = 1000 / adViewers.length;
+    private static final String[] adViewers = {"Matt", "Steve", "Dustin",
 	"James", "Trond", "Melinda",
 	"Bob", "Perry", "Sharon",
 	"Leila", "Tony", "Damien", "Jan", "JChris",
@@ -68,9 +69,6 @@ public class AdvertloadDriver {
 	"Mike", "Claire", "Benjamin", "Tony", "Keith",
 	"Bin", "Chiyoung", "Jens", "Srini", "Rags", "John", "Ali"
     };
-    // See http://en.wikipedia.org/wiki/Category:Celtic_legendary_creatures
-    private static final String[] monsters = {"Bauchan", "Fachen", "Fuath", "Joint-eater", "Kelpie",
-	"Knocker", "Merrow", "Morgen", "Pictish-beast", "Wild-man"};
 
     /**
      * Constructs an instance of a user session on the game simulator.
@@ -96,6 +94,8 @@ public class AdvertloadDriver {
 		ctx.getXPathValue("/advertloadBenchmark/serverConfig/port").trim();
 	user = ctx.getProperty("user");
 	password = ctx.getProperty("password");
+        actorsSpecified = Integer.parseInt(ctx.getProperty("numactors"));
+
 	URI server;
 	try {
 	    // Create a basic client
@@ -124,7 +124,6 @@ public class AdvertloadDriver {
     public void setup() throws InterruptedException {
 	logger.info("The creator is setting up a consumer oriented world.");
 	populateViewers(ACTORMULT);
-	populateMonsters(ACTORMULT);
 	logger.info("The creator will now rest; we're ready for the holiday season.");
 
 
@@ -133,19 +132,9 @@ public class AdvertloadDriver {
     private void populateViewers(int number) {
 	logger.log(Level.INFO, "Creating {0} advertising viewers to buy our stuff.", number);
 	for (int i = 0; i < number; i++) {
-	    for (String aplayer : players) {
+	    for (String aplayer : adViewers) {
 		AdViewer newPlayer = new AdViewer(aplayer + i);
 		advertloadStore.add(newPlayer.getName(), 0, gson.toJson(newPlayer));
-	    }
-	}
-    }
-
-    private void populateMonsters(int number) {
-	logger.log(Level.INFO, "Creating {0} monsters to vanquish players.", number);
-	for (int i = 0; i < number; i++) {
-	    for (String amonster : monsters) {
-		Monster newMonster = new Monster(amonster + i);
-		advertloadStore.add(newMonster.getName(), 0, gson.toJson(newMonster));
 	    }
 	}
     }
@@ -248,17 +237,8 @@ public class AdvertloadDriver {
     }
 
     private String getRandomViewerName() {
-	int i = random.random(0, players.length - 1);
-	return players[i];
-    }
-
-    private String getRandomMonsterName() {
-	int i = random.random(0, monsters.length - 1);
-	return monsters[i];
-    }
-
-    private String getRandomMonster() {
-	return getRandomMonsterName() + random.random(0, ACTORMULT - 1);
+	int i = random.random(0, adViewers.length - 1);
+	return adViewers[i];
     }
 
     private String getRandomViewer() {

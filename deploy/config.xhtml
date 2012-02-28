@@ -105,6 +105,8 @@
 		</xforms:bind>
                 <xforms:bind id='bind-serverConfig-bucketpw' xforms:nodeset='bucketpw'>
 		</xforms:bind>
+                <xforms:bind id='bind-serverConfig-numactors' xforms:nodeset='numactors'>
+		</xforms:bind>
 	</xforms:bind>
 </xforms:bind>
 
@@ -150,6 +152,7 @@
 <serverConfig>Server Config</serverConfig>
 <bucket>Bucket Name</bucket>
 <bucketpw>Bucket Password</bucketpw>
+<numactors>Number of actors (approx.)</numactors>
 
                     <unit>Unit</unit>
                     <time>Time (sec)</time>
@@ -312,6 +315,9 @@
 		</xforms:input>
                 <xforms:input id='input-serverConfig-bucketpw' xforms:bind='bind-serverConfig-bucketpw'>
 			<xforms:label xforms:model='benchmark-labels' xforms:ref='/labels/bucketpw'/>
+		</xforms:input>
+                <xforms:input id='input-serverConfig-numactors' xforms:bind='bind-serverConfig-numactors'>
+			<xforms:label xforms:model='benchmark-labels' xforms:ref='/labels/numactors'/>
 		</xforms:input>
 		</xforms:group>
 	</xforms:case>
