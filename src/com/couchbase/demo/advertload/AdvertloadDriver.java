@@ -1,7 +1,7 @@
 /*
  * This benchmark has been based on the FTP101 driver
  */
-package com.couchbase.demo.gamesim;
+package com.couchbase.demo.advertload;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,10 +21,10 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 import net.spy.memcached.CouchbaseClient;
 
-@BenchmarkDefinition(name = "Game Simulator",
-version = "0.4",
+@BenchmarkDefinition(name = "Advertising Workload",
+version = "0.1",
 configPrecedence = true)
-@BenchmarkDriver(name = "GameSimDriver",
+@BenchmarkDriver(name = "AdvertloadDriver",
 threadPerScale = (float) 1)
 @MatrixMix(operations = {"Login", "Logout", "Eat", "AttackRandom"},
 mix = {
@@ -36,7 +36,7 @@ mix = {
 @NegativeExponential(cycleType = CycleType.CYCLETIME,
 cycleMean = 200,
 cycleDeviation = 5)
-public class GameSimDriver {
+public class AdvertloadDriver {
 
     /** The driver context for this instance. */
     private DriverContext ctx;
@@ -58,7 +58,7 @@ public class GameSimDriver {
     Player player;
     private final String bucketname;
     private String bucketpass;
-    private static CouchbaseClient gamesimStore;
+    private static CouchbaseClient advertloadStore;
     private final int ACTORMULT = 300000 / players.length;
     private static final String[] players = {"Matt", "Steve", "Dustin",
 	"James", "Trond", "Melinda",
@@ -77,7 +77,7 @@ public class GameSimDriver {
      * @throws XPathExpressionException An XPath error occurred
      * @throws IOException I/O error creating the driver instance
      */
-    public GameSimDriver() throws XPathExpressionException, IOException {
+    public AdvertloadDriver() throws XPathExpressionException, IOException {
 	ctx = DriverContext.getContext();
 
 	// set up gson for serialization
@@ -91,32 +91,32 @@ public class GameSimDriver {
 	uploadPrefix = "up" + threadId + '_';
 	localFileName = "/tmp/ftp" + threadId;
 	host =
-		ctx.getXPathValue("/gamesimBenchmark/serverConfig/host").trim();
+		ctx.getXPathValue("/advertloadBenchmark/serverConfig/host").trim();
 	String portNum =
-		ctx.getXPathValue("/gamesimBenchmark/serverConfig/port").trim();
+		ctx.getXPathValue("/advertloadBenchmark/serverConfig/port").trim();
 	user = ctx.getProperty("user");
 	password = ctx.getProperty("password");
 	URI server;
 	try {
 	    // Create a basic client
-	    server = new URI(ctx.getXPathValue("/gamesimBenchmark/serverConfig/host").trim());
+	    server = new URI(ctx.getXPathValue("/advertloadBenchmark/serverConfig/host").trim());
 	} catch (URISyntaxException ex) {
-	    Logger.getLogger(GameSimDriver.class.getName()).log(Level.SEVERE, null, ex);
+	    Logger.getLogger(AdvertloadDriver.class.getName()).log(Level.SEVERE, null, ex);
 	    throw new IOException("Could not deal with URI.");
 	}
-	bucketname = ctx.getXPathValue("/gamesimBenchmark/serverConfig/bucket").trim();
-	bucketpass = ctx.getXPathValue("/gamesimBenchmark/serverConfig/bucketpw").trim();
+	bucketname = ctx.getXPathValue("/advertloadBenchmark/serverConfig/bucket").trim();
+	bucketpass = ctx.getXPathValue("/advertloadBenchmark/serverConfig/bucketpw").trim();
 	if (bucketpass == null) {
 	    bucketpass = "";
 	}
 	ArrayList<URI> servers = new ArrayList<URI>();
 	servers.add(server);
 	// @todo fix up this singletonness of the clients
-	if (gamesimStore == null) {
+	if (advertloadStore == null) {
 	    // can't do this, bug SPY-2
 	    //ConnectionFactoryBuilder cfb = new ConnectionFactoryBuilder();
 	    //cfb.setOpTimeout(20000).setProtocol(ConnectionFactoryBuilder.Protocol.BINARY);
-	    gamesimStore = new CouchbaseClient(servers, bucketname, bucketpass);
+	    advertloadStore = new CouchbaseClient(servers, bucketname, bucketpass);
 	}
     }
 
@@ -135,7 +135,7 @@ public class GameSimDriver {
 	for (int i = 0; i < number; i++) {
 	    for (String aplayer : players) {
 		Player newPlayer = new Player(aplayer + i);
-		gamesimStore.add(newPlayer.getName(), 0, gson.toJson(newPlayer));
+		advertloadStore.add(newPlayer.getName(), 0, gson.toJson(newPlayer));
 	    }
 	}
     }
@@ -145,7 +145,7 @@ public class GameSimDriver {
 	for (int i = 0; i < number; i++) {
 	    for (String amonster : monsters) {
 		Monster newMonster = new Monster(amonster + i);
-		gamesimStore.add(newMonster.getName(), 0, gson.toJson(newMonster));
+		advertloadStore.add(newMonster.getName(), 0, gson.toJson(newMonster));
 	    }
 	}
     }
@@ -164,7 +164,7 @@ public class GameSimDriver {
 	}
 	ctx.recordTime();
 	playerName = getRandomPlayer();
-	String playerJsonRepresentation = (String) gamesimStore.get(stripBlanks(playerName));
+	String playerJsonRepresentation = (String) advertloadStore.get(stripBlanks(playerName));
 	logger.log(Level.FINE, "Player JSON:\n {0}", playerJsonRepresentation);
 	if (playerJsonRepresentation == null) {
 	    logger.log(Level.FINE, "Player JSON:\n {0}", playerJsonRepresentation);
@@ -201,14 +201,14 @@ public class GameSimDriver {
         // Add some read work
         for (int i=0; i<400; i++) {
             playerName = getRandomPlayer();
-            gamesimStore.asyncGet(stripBlanks(playerName));
+            advertloadStore.asyncGet(stripBlanks(playerName));
         }
 	player = null;
 	ctx.recordTime();
     }
 
     private void storePlayer() throws InterruptedException, ExecutionException {
-	Future<Boolean> setRes = gamesimStore.set(stripBlanks(player.getName()), 0, gson.toJson(player));
+	Future<Boolean> setRes = advertloadStore.set(stripBlanks(player.getName()), 0, gson.toJson(player));
 	setRes.get();
     }
 
@@ -223,7 +223,7 @@ public class GameSimDriver {
 	doLogin();
 	String attackerName = getRandomMonster();
 	ctx.recordTime();
-	Monster attacker = gson.fromJson((String) gamesimStore.get(attackerName), Monster.class);
+	Monster attacker = gson.fromJson((String) advertloadStore.get(attackerName), Monster.class);
 	assert attacker != null : "There is no monster " + attackerName;
 
 
@@ -243,7 +243,7 @@ public class GameSimDriver {
 	    Double itemProb = random.drandom(0.0d, 1.0d);
 	    if (itemProb <= attacker.getItemProbability()) {
 		Item bounty = new Item(player.getName());
-		gamesimStore.set(bounty.getItemName(), 0, gson.toJson(bounty)).get();
+		advertloadStore.set(bounty.getItemName(), 0, gson.toJson(bounty)).get();
 		logger.log(Level.FINER, "Player {0} won a {1}", new Object[]{player.getName(), bounty.getItemName()});
 	    }
 	    // 100*2^level
@@ -274,7 +274,7 @@ public class GameSimDriver {
     @EndRun
     public void cleanup() {
 	//gamesimStore.flush();
-	gamesimStore.shutdown();
+	advertloadStore.shutdown();
     }
 
     public static String stripBlanks(String s) {

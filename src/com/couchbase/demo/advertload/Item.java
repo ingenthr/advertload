@@ -1,4 +1,4 @@
-package com.couchbase.demo.gamesim;
+package com.couchbase.demo.advertload;
 
 import java.util.UUID;
 
@@ -21,7 +21,7 @@ public class Item {
     public Item(String itemOwner) {
 	ownerId = itemOwner;
 	uuid = UUID.randomUUID();
-	name = weapons[GameSimDriver.getRandom().random(0, weapons.length-1)] + "_" + uuid;
+	name = weapons[AdvertloadDriver.getRandom().random(0, weapons.length-1)] + "_" + uuid;
     }
 
     protected Item() {

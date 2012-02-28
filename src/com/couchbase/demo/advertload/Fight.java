@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.couchbase.demo.gamesim;
+package com.couchbase.demo.advertload;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

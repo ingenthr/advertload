@@ -1,4 +1,4 @@
-package com.couchbase.demo.gamesim;
+package com.couchbase.demo.advertload;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -9,11 +9,11 @@ import java.util.concurrent.TimeoutException;
  *
  * @author ingenthr
  */
-public class GamesimFuture<Boolean> implements Future {
+public class AdvertloadFuture<Boolean> implements Future {
 
     boolean operationStatus;
 
-    GamesimFuture(boolean b) {
+    AdvertloadFuture(boolean b) {
         operationStatus = b;
     }
 

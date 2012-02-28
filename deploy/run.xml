@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<gamesimBenchmark>
+<advertloadBenchmark>
     <jvmConfig xmlns="http://faban.sunsource.net/ns/fabanharness">
         <javaHome>/usr/java</javaHome>
         <jvmOptions>-Xmx1g -Xms256m -XX:+DisableExplicitGC</jvmOptions>
     </jvmConfig>
     <!-- The definition binds the config file with the benchmark class -->
     <!-- We declare the driver as the default namespace 'cause it is most common here -->
-    <fa:runConfig definition="com.couchbase.demo.gamesim.GameSimDriver"
+    <fa:runConfig definition="com.couchbase.demo.advertload.AdvertloadDriver"
                   xmlns:fa="http://faban.sunsource.net/ns/faban"
                   xmlns:fh="http://faban.sunsource.net/ns/fabanharness"
                   xmlns="http://faban.sunsource.net/ns/fabandriver">
-        <fh:description>Game Simulator Benchmark Run</fh:description>
+        <fh:description>Advertising Load Benchmark Run</fh:description>
         <!-- The hostConfig section is used by the harness to control hosts -->
         <fa:hostConfig>
             <fa:host>ec2-50-19-74-112.compute-1.amazonaws.com</fa:host>
@@ -61,7 +61,7 @@
         </runtimeStats>
 
         <!-- The driver-specific config.  -->
-        <driverConfig name="GameSimDriver">
+        <driverConfig name="AdvertloadDriver">
             <!-- The number of agents, or host:agents pairs
             separated by space -->
             <agents>1</agents>
@@ -113,4 +113,4 @@
         <bucket>default</bucket>
         <bucketpw></bucketpw>
     </serverConfig>
-</gamesimBenchmark>
+</advertloadBenchmark>

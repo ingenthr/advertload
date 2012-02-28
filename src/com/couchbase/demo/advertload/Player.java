@@ -1,4 +1,4 @@
-package com.couchbase.demo.gamesim;
+package com.couchbase.demo.advertload;
 
 import java.util.UUID;
 
@@ -21,9 +21,9 @@ public class Player {
     public Player(String playerName) {
 	name = playerName;
 	uuid = UUID.randomUUID();
-	hitpoints = GameSimDriver.getRandom().random(70, 150);
-	level = GameSimDriver.getRandom().random(1, 5);
-	experience = GameSimDriver.getRandom().random((100*(2^level)), (100*(2^(level+1))-1));
+	hitpoints = AdvertloadDriver.getRandom().random(70, 150);
+	level = AdvertloadDriver.getRandom().random(1, 5);
+	experience = AdvertloadDriver.getRandom().random((100*(2^level)), (100*(2^(level+1))-1));
     }
 
     protected Player() {

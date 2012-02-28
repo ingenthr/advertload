@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.couchbase.demo.gamesim;
+package com.couchbase.demo.advertload;
 
 import java.util.UUID;
 
@@ -23,9 +23,9 @@ public class Monster {
     public Monster(String monstername) {
 	name = monstername;
 	uuid = UUID.randomUUID();
-	experienceWhenKilled = GameSimDriver.getRandom().random(10, 100);
-	hitpoints = GameSimDriver.getRandom().random(10, 5000);
-	itemProbability = GameSimDriver.getRandom().drandom(0.1d, 0.6d);
+	experienceWhenKilled = AdvertloadDriver.getRandom().random(10, 100);
+	hitpoints = AdvertloadDriver.getRandom().random(10, 5000);
+	itemProbability = AdvertloadDriver.getRandom().drandom(0.1d, 0.6d);
     }
 
     protected Monster() {
