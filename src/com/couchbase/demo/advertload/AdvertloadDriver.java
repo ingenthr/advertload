@@ -3,6 +3,8 @@
  */
 package com.couchbase.demo.advertload;
 
+import com.couchbase.client.CouchbaseClient;
+import com.couchbase.client.CouchbaseConnectionFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.faban.driver.*;
@@ -19,7 +21,6 @@ import java.io.*;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.logging.Logger;
-import net.spy.memcached.CouchbaseClient;
 
 @BenchmarkDefinition(name = "Advertising Workload",
 version = "0.1",
@@ -55,7 +56,7 @@ public class AdvertloadDriver {
     GsonBuilder gsonBuilder;
     String playerName;
     String password;
-    Player player;
+    AdViewer player;
     private final String bucketname;
     private String bucketpass;
     private static CouchbaseClient advertloadStore;
@@ -66,7 +67,7 @@ public class AdvertloadDriver {
 	"Leila", "Tony", "Damien", "Jan", "JChris",
 	"Volker", "Dale", "Aaron", "Aliaksey", "Frank",
 	"Mike", "Claire", "Benjamin", "Tony", "Keith",
-	"Bin", "Chiyoung", "Jens", "Srini"
+	"Bin", "Chiyoung", "Jens", "Srini", "Rags", "John", "Ali"
     };
     // See http://en.wikipedia.org/wiki/Category:Celtic_legendary_creatures
     private static final String[] monsters = {"Bauchan", "Fachen", "Fuath", "Joint-eater", "Kelpie",
@@ -113,28 +114,28 @@ public class AdvertloadDriver {
 	servers.add(server);
 	// @todo fix up this singletonness of the clients
 	if (advertloadStore == null) {
-	    // can't do this, bug SPY-2
-	    //ConnectionFactoryBuilder cfb = new ConnectionFactoryBuilder();
-	    //cfb.setOpTimeout(20000).setProtocol(ConnectionFactoryBuilder.Protocol.BINARY);
-	    advertloadStore = new CouchbaseClient(servers, bucketname, bucketpass);
+            CouchbaseConnectionFactoryBuilder cfb = new CouchbaseConnectionFactoryBuilder();
+            cfb.setOpTimeout(10000);  // wait up to 10 seconds for an operation to succeed
+            cfb.setOpQueueMaxBlockTime(5000); // wait up to 5 seconds when trying to enqueue an operation
+	    advertloadStore = new CouchbaseClient(cfb.buildCouchbaseConnection(servers, bucketname, bucketname, bucketpass));
 	}
     }
 
     @OnceBefore
     public void setup() throws InterruptedException {
-	logger.info("The creator is starting the spike of population.");
-	populatePlayers(ACTORMULT);
+	logger.info("The creator is setting up a consumer oriented world.");
+	populateViewers(ACTORMULT);
 	populateMonsters(ACTORMULT);
-	logger.info("The creator will now rest; the world has been populated.");
+	logger.info("The creator will now rest; we're ready for the holiday season.");
 
 
     }
 
-    private void populatePlayers(int number) {
-	logger.log(Level.INFO, "Creating {0} players to rid the world of monsters.", number);
+    private void populateViewers(int number) {
+	logger.log(Level.INFO, "Creating {0} advertising viewers to buy our stuff.", number);
 	for (int i = 0; i < number; i++) {
 	    for (String aplayer : players) {
-		Player newPlayer = new Player(aplayer + i);
+		AdViewer newPlayer = new AdViewer(aplayer + i);
 		advertloadStore.add(newPlayer.getName(), 0, gson.toJson(newPlayer));
 	    }
 	}
@@ -168,9 +169,9 @@ public class AdvertloadDriver {
 	logger.log(Level.FINE, "Player JSON:\n {0}", playerJsonRepresentation);
 	if (playerJsonRepresentation == null) {
 	    logger.log(Level.FINE, "Player JSON:\n {0}", playerJsonRepresentation);
-	    player = new Player(playerName);
+	    player = new AdViewer(playerName);
 	} else {
-	    player = gson.fromJson(playerJsonRepresentation, Player.class);
+	    player = gson.fromJson(playerJsonRepresentation, AdViewer.class);
 	}
         //Only write to the store if the status changed
         if (!player.isLoggedIn()){

@@ -59,7 +59,7 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/3">
             <compilation-unit>
                 <package-root>src</package-root>
-                <classpath mode="compile">lib/commons-codec-1.4.jar:lib/commons-logging.jar:lib/gson-1.6.jar:lib/jettison-1.1.jar:lib/joda-time-1.6.2.jar:lib/netty-3.1.5.GA.jar:lib/spymemcached-2.8-preview.jar:/Users/ingenthr/src/faban/stage/lib/fabanagents.jar:/Users/ingenthr/src/faban/stage/lib/fabancommon.jar:/Users/ingenthr/src/faban/stage/lib/fabandriver.jar</classpath>
+                <classpath mode="compile">lib/commons-logging.jar:lib/gson-1.6.jar:lib/jettison-1.1.jar:lib/joda-time-1.6.2.jar:/Users/ingenthr/src/faban/stage/lib/fabanagents.jar:/Users/ingenthr/src/faban/stage/lib/fabancommon.jar:/Users/ingenthr/src/faban/stage/lib/fabandriver.jar:lib/couchbase-client-1.0.1.jar:lib/netty-3.2.0.Final.jar:lib/spymemcached-2.8.0.jar:lib/commons-codec-1.5.jar</classpath>
                 <source-level>1.6</source-level>
             </compilation-unit>
         </java-data>

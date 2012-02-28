@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * This class represents a player in the game simulator.
  * @author ingenthr
  */
-public class Player {
+public class AdViewer {
     private String jsonType = "player";
     private UUID uuid;
     private String name;
@@ -18,7 +18,7 @@ public class Player {
     private boolean loggedIn;
     private ArrayList<String> playerItems;
 
-    public Player(String playerName) {
+    public AdViewer(String playerName) {
 	name = playerName;
 	uuid = UUID.randomUUID();
 	hitpoints = AdvertloadDriver.getRandom().random(70, 150);
@@ -26,7 +26,7 @@ public class Player {
 	experience = AdvertloadDriver.getRandom().random((100*(2^level)), (100*(2^(level+1))-1));
     }
 
-    protected Player() {
+    protected AdViewer() {
 	// for GSON
     }
 
